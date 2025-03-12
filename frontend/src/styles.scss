@@ -1,0 +1,79 @@
+// Variables
+:root {
+  --primary-color: #8B4513;  // Marrón vintage
+  --secondary-color: #DEB887;  // Beige vintage
+  --accent-color: #CD853F;  // Marrón claro
+  --text-color: #463E3F;  // Gris oscuro vintage
+  --background-color: #F5DEB3;  // Trigo vintage
+  
+  // Fuentes
+  --font-primary: 'Press Start 2P', cursive;  // Fuente retro pixelada
+  --font-secondary: 'Courier New', monospace;
+}
+
+// Estilos globales
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: var(--font-secondary);
+  background-image: url('assets/vintage-paper.png');
+  background-repeat: repeat;
+}
+
+// Clases de utilidad vintage
+.vintage-card {
+  background: var(--secondary-color);
+  border: 3px solid var(--primary-color);
+  border-radius: 8px;
+  box-shadow: 4px 4px 0 var(--text-color);
+  padding: 20px;
+  margin: 20px;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border: 2px dashed var(--accent-color);
+    border-radius: 10px;
+    pointer-events: none;
+  }
+}
+
+.vintage-button {
+  background: var(--primary-color);
+  color: var(--secondary-color);
+  border: 2px solid var(--text-color);
+  padding: 10px 20px;
+  font-family: var(--font-primary);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0 var(--text-color);
+  }
+  
+  &:active {
+    transform: translate(2px, 2px);
+    box-shadow: none;
+  }
+}
+
+.vintage-input {
+  background: var(--secondary-color);
+  border: 2px solid var(--primary-color);
+  padding: 10px;
+  font-family: var(--font-secondary);
+  color: var(--text-color);
+  
+  &:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px var(--accent-color);
+  }
+} 

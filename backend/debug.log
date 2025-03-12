@@ -1,0 +1,2 @@
+ERROR 2025-03-12 00:52:13,651 views Movimiento inválido: INVALID
+ERROR 2025-03-12 00:52:13,651 views Error de validación: [ErrorDetail(string='Movimiento inválido. Debe ser ROCK, PAPER o SCISSORS', code='invalid')]
