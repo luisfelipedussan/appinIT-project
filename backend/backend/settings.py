@@ -136,10 +136,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOW_ALL_ORIGINS = True  # Solo para desarrollo
 
 # Para producción, especifica los orígenes permitidos:
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:4200",
-#     "http://tu-dominio.com",
-# ]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:4200",  # URL del frontend
+]
 
 # Agregar al final del archivo
 LOGGING = {
