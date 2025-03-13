@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, PLATFORM_ID, Inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GameService } from '../../services/game.service';
 import { Game } from '../../interfaces/game.interface';
-import { CommonModule } from '@angular/common';
-import { interval } from 'rxjs';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { interval, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 @Component({
@@ -171,25 +171,40 @@ import { switchMap } from 'rxjs/operators';
     }
   `]
 })
-export class GameBoardComponent implements OnInit {
+export class GameBoardComponent implements OnInit, OnDestroy {
   game: Game | null = null;
   isPlayer1Turn = true;
   gameId: number = 0;
+  private updateSubscription?: Subscription;
+  private isBrowser: boolean;
 
   constructor(
     private route: ActivatedRoute,
-    private gameService: GameService
-  ) {}
+    private gameService: GameService,
+    @Inject(PLATFORM_ID) platformId: Object
+  ) {
+    this.isBrowser = isPlatformBrowser(platformId);
+  }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.gameId = +params['id'];
-      this.updateGameState();
+      if (this.isBrowser) {
+        this.updateGameState();
+      }
     });
   }
 
+  ngOnDestroy() {
+    if (this.updateSubscription) {
+      this.updateSubscription.unsubscribe();
+    }
+  }
+
   private updateGameState() {
-    interval(1000).pipe(
+    if (!this.isBrowser) return;
+
+    this.updateSubscription = interval(1000).pipe(
       switchMap(() => this.gameService.getGameState(this.gameId))
     ).subscribe({
       next: (game) => {
@@ -200,16 +215,56 @@ export class GameBoardComponent implements OnInit {
     });
   }
 
+  private updateGameStatus() {
+    if (!this.game) return;
+    
+    const currentRound = this.game.rounds[this.game.rounds.length - 1];
+    
+    console.log('Estado actual:', {
+      currentRound,
+      rounds: this.game.rounds,
+      isPlayer1Turn: this.isPlayer1Turn
+    });
+
+    if (!currentRound) {
+      this.isPlayer1Turn = true;
+      return;
+    }
+
+    // Si ambos jugadores han movido en la ronda actual
+    if (currentRound.player1_move && currentRound.player2_move) {
+      // La siguiente ronda siempre comienza con el jugador 1
+      this.isPlayer1Turn = true;
+      return;
+    }
+
+    // Durante una ronda en progreso
+    if (!currentRound.player1_move) {
+      this.isPlayer1Turn = true;
+    } else if (!currentRound.player2_move) {
+      this.isPlayer1Turn = false;
+    }
+  }
+
   get canMakeMove(): boolean {
     if (!this.game || !this.game.is_active) return false;
     
     const currentRound = this.game.rounds[this.game.rounds.length - 1];
     
-    // Si no hay ronda actual, permitir que el jugador 1 comience
-    if (!currentRound) return this.isPlayer1Turn;
+    console.log('Verificando si puede mover:', {
+      currentRound,
+      isPlayer1Turn: this.isPlayer1Turn,
+      roundsLength: this.game.rounds.length
+    });
+
+    // Si no hay rondas, el jugador 1 comienza
+    if (!currentRound) {
+      return this.isPlayer1Turn;
+    }
     
-    // Si ambos jugadores han movido, permitir que el jugador 1 comience una nueva ronda
+    // Si la ronda actual está completa
     if (currentRound.player1_move && currentRound.player2_move) {
+      // Siempre permitir que el jugador 1 comience una nueva ronda
       return this.isPlayer1Turn;
     }
     
@@ -217,7 +272,7 @@ export class GameBoardComponent implements OnInit {
     if (this.isPlayer1Turn) {
       return !currentRound.player1_move;
     } else {
-      return !currentRound.player2_move && !!currentRound.player1_move;
+      return currentRound.player1_move !== null && currentRound.player2_move === null;
     }
   }
 
@@ -237,24 +292,26 @@ export class GameBoardComponent implements OnInit {
 
     const playerId = this.isPlayer1Turn ? this.game.player1.id : this.game.player2.id;
     
+    console.log('Realizando movimiento:', {
+      playerId,
+      move,
+      isPlayer1Turn: this.isPlayer1Turn,
+      currentRound: this.game.rounds[this.game.rounds.length - 1]
+    });
+
     this.gameService.makeMove(this.gameId, playerId, move).subscribe({
       next: (updatedGame) => {
+        console.log('Juego actualizado:', updatedGame);
         this.game = updatedGame;
-        
-        const currentRound = updatedGame.rounds[updatedGame.rounds.length - 1];
-        
-        // Cambiar el turno solo si el movimiento actual está completo
-        if (currentRound) {
-          if (this.isPlayer1Turn && currentRound.player1_move) {
-            this.isPlayer1Turn = false;
-          } else if (!this.isPlayer1Turn && currentRound.player2_move) {
-            this.isPlayer1Turn = true;
-          }
-        }
+        this.updateGameStatus();
       },
       error: (error) => {
         console.error('Error al realizar movimiento:', error);
-        alert('Error al realizar el movimiento. Intenta de nuevo.');
+        if (error.error?.error) {
+          alert(error.error.error);
+        } else {
+          alert('Error al realizar el movimiento. Intenta de nuevo.');
+        }
       }
     });
   }
@@ -274,25 +331,6 @@ export class GameBoardComponent implements OnInit {
       case 'PAPER': return 'Papel';
       case 'SCISSORS': return 'Tijera';
       default: return '';
-    }
-  }
-
-  private updateGameStatus() {
-    if (!this.game) return;
-    
-    const currentRound = this.game.rounds[this.game.rounds.length - 1];
-    
-    if (!currentRound) {
-      this.isPlayer1Turn = true;
-      return;
-    }
-
-    // Si la ronda actual está completa, la siguiente ronda comienza con el jugador 1
-    if (currentRound.player1_move && currentRound.player2_move) {
-      this.isPlayer1Turn = true;
-    } else {
-      // Durante una ronda, el turno depende de quién ya ha movido
-      this.isPlayer1Turn = !currentRound.player1_move;
     }
   }
 
