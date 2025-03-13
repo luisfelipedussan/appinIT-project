@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { Game } from '../interfaces/game.interface';
 
 interface Player {
   id: number;
@@ -32,16 +33,26 @@ export class GameService {
     );
   }
 
-  makeMove(gameId: number, playerId: number, movement: string): Observable<any> {
+  makeMove(gameId: number, playerId: number, movement: string): Observable<Game> {
     const payload = {
       player_id: playerId,
       movement: movement
     };
     
-    return this.http.post(`${this.apiUrl}/games/${gameId}/make_move/`, payload);
+    return this.http.post<Game>(`${this.apiUrl}/games/${gameId}/make_move/`, payload).pipe(
+      tap(response => console.log('Movimiento realizado:', response))
+    );
   }
 
-  getGameState(gameId: number): Observable<any> {
-    return this.http.get(`${this.apiUrl}/games/${gameId}/`);
+  getGameState(gameId: number): Observable<Game> {
+    return this.http.get<Game>(`${this.apiUrl}/games/${gameId}/`).pipe(
+      tap(game => console.log('Estado del juego:', game))
+    );
+  }
+
+  restartGame(gameId: number): Observable<Game> {
+    return this.http.post<Game>(`${this.apiUrl}/games/${gameId}/restart_game/`, {}).pipe(
+      tap(response => console.log('Juego reiniciado:', response))
+    );
   }
 } 
