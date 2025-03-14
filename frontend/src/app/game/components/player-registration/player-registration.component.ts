@@ -52,32 +52,94 @@ import { ReactiveFormsModule } from '@angular/forms';
     .registration-form {
       max-width: 400px;
       margin: 40px auto;
-      text-align: center;
-      padding: 20px;
+      padding: 30px;
+      background: #f4f1e8;
+      border: 4px solid #000;
+      border-radius: 15px;
+      box-shadow: 8px 8px 0 #000;
     }
+
+    h2 {
+      color: #000;
+      text-shadow: 2px 2px 0 #6b4e71;
+      font-family: 'Arial Black', sans-serif;
+      font-size: 28px;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
     .form-group {
-      margin: 20px 0;
+      margin: 25px 0;
       text-align: left;
     }
+
     label {
       display: block;
-      margin-bottom: 8px;
-      font-family: var(--font-secondary);
+      margin-bottom: 10px;
+      font-family: 'Arial Black', sans-serif;
+      color: #4a6741;
+      font-size: 18px;
+      font-weight: bold;
     }
+
     .vintage-input {
       width: 100%;
-      padding: 8px;
-      margin-bottom: 5px;
-      border: 2px solid var(--primary-color);
-      border-radius: 4px;
+      padding: 12px;
+      font-size: 16px;
+      background: #fff;
+      border: 3px solid #000;
+      border-radius: 8px;
+      box-shadow: 3px 3px 0 #000;
+      transition: all 0.2s ease;
     }
+
+    .vintage-input:focus {
+      outline: none;
+      transform: translate(-2px, -2px);
+      box-shadow: 5px 5px 0 #000;
+    }
+
     .error-message {
       color: #d32f2f;
-      font-size: 12px;
-      margin-top: 5px;
+      font-size: 14px;
+      margin-top: 8px;
+      font-weight: bold;
+      text-shadow: 1px 1px 0 rgba(0,0,0,0.1);
     }
+
     .vintage-button {
-      margin-top: 20px;
+      width: 100%;
+      font-size: 24px;
+      padding: 15px 30px;
+      margin-top: 30px;
+      cursor: pointer;
+      background: #4a6741;
+      color: white;
+      border: 3px solid #000;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 4px 4px 0 #000;
+      font-family: 'Arial Black', sans-serif;
+      text-transform: uppercase;
+    }
+
+    .vintage-button:hover {
+      background: #6b4e71;
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0 #000;
+    }
+
+    .vintage-button:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0 #000;
+    }
+
+    .vintage-button:disabled {
+      background: #cccccc;
+      cursor: not-allowed;
+      border-color: #666;
+      box-shadow: none;
+      transform: none;
     }
   `]
 })

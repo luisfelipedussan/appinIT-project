@@ -67,6 +67,10 @@ import { switchMap } from 'rxjs/operators';
       max-width: 800px;
       margin: 0 auto;
       padding: 20px;
+      background: #f4f1e8;
+      border: 4px solid #000;
+      border-radius: 15px;
+      box-shadow: 8px 8px 0 #000;
     }
 
     .score-board {
@@ -74,9 +78,11 @@ import { switchMap } from 'rxjs/operators';
       justify-content: space-between;
       align-items: center;
       margin-bottom: 30px;
-      background: #f5f5f5;
+      background: #e8e4d9;
       padding: 20px;
+      border: 3px solid #000;
       border-radius: 10px;
+      box-shadow: 4px 4px 0 #000;
     }
 
     .player {
@@ -85,24 +91,31 @@ import { switchMap } from 'rxjs/operators';
       border-radius: 8px;
       transition: all 0.3s ease;
       min-width: 200px;
+      background: #fff;
+      border: 2px solid #000;
+      box-shadow: 3px 3px 0 #000;
     }
 
     .player.active {
-      background-color: #4CAF50;
+      background-color: #6b4e71;
       color: white;
       transform: scale(1.05);
+      border: 3px solid #000;
     }
 
     .vs {
-      font-size: 24px;
+      font-size: 32px;
       font-weight: bold;
-      color: #666;
+      color: #000;
+      text-shadow: 2px 2px 0 #6b4e71;
+      font-family: 'Arial Black', sans-serif;
     }
 
     .score {
       font-size: 24px;
       margin-top: 10px;
       font-weight: bold;
+      color: #4a6741;
     }
 
     .moves {
@@ -120,54 +133,110 @@ import { switchMap } from 'rxjs/operators';
       font-size: 24px;
       padding: 15px 30px;
       cursor: pointer;
-      background: #4CAF50;
+      background: #4a6741;
       color: white;
-      border: none;
-      border-radius: 5px;
-      transition: all 0.3s ease;
+      border: 3px solid #000;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 4px 4px 0 #000;
+      font-family: 'Arial Black', sans-serif;
+      text-transform: uppercase;
     }
 
     .vintage-button:hover {
-      background: #45a049;
-      transform: translateY(-2px);
+      background: #6b4e71;
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0 #000;
+    }
+
+    .vintage-button:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0 #000;
     }
 
     .vintage-button:disabled {
       background: #cccccc;
       cursor: not-allowed;
+      border-color: #666;
+      box-shadow: none;
+      transform: none;
     }
 
     .round-history {
       margin-top: 30px;
+      border: 3px solid #000;
+      border-radius: 10px;
+      padding: 15px;
+      background: #e8e4d9;
+      box-shadow: 4px 4px 0 #000;
+    }
+
+    .round-history h3 {
+      color: #000;
+      text-shadow: 2px 2px 0 #6b4e71;
+      font-family: 'Arial Black', sans-serif;
+      margin-bottom: 15px;
     }
 
     .round {
       padding: 15px;
       margin: 10px 0;
-      background-color: #f5f5f5;
+      background-color: #fff;
+      border: 2px solid #000;
       border-radius: 8px;
-      border-left: 4px solid #4CAF50;
+      box-shadow: 3px 3px 0 #000;
     }
 
     .moves-history {
       display: flex;
       justify-content: space-around;
       margin-top: 10px;
-      font-size: 20px;
+      font-size: 24px;
+      font-weight: bold;
     }
 
     .waiting-message {
-      font-size: 20px;
-      color: #666;
+      font-size: 24px;
+      color: #6b4e71;
       margin: 20px 0;
+      font-weight: bold;
+      text-shadow: 1px 1px 0 #000;
     }
 
     .game-over {
       text-align: center;
       margin-top: 30px;
       padding: 20px;
-      background: #f5f5f5;
+      background: #e8e4d9;
+      border: 3px solid #000;
       border-radius: 10px;
+      box-shadow: 4px 4px 0 #000;
+    }
+
+    .game-over h2 {
+      color: #000;
+      text-shadow: 2px 2px 0 #6b4e71;
+      font-family: 'Arial Black', sans-serif;
+      margin-bottom: 15px;
+    }
+
+    .game-status {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .game-status h3 {
+      color: #000;
+      text-shadow: 2px 2px 0 #6b4e71;
+      font-family: 'Arial Black', sans-serif;
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .game-status p {
+      color: #4a6741;
+      font-weight: bold;
+      font-size: 18px;
     }
   `]
 })
