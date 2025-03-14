@@ -237,8 +237,8 @@ export class GameBoardComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Si la ronda está completa (ambos jugadores movieron)
-    if (currentRound.player1_move && currentRound.player2_move) {
+    // Si la ronda actual está completa o tiene ganador, la siguiente ronda comienza con el jugador 1
+    if ((currentRound.player1_move && currentRound.player2_move) || currentRound.winner) {
       this.isPlayer1Turn = true;
       return;
     }
@@ -271,9 +271,8 @@ export class GameBoardComponent implements OnInit, OnDestroy {
       return this.isPlayer1Turn;
     }
 
-    // Si la ronda está completa (ambos jugadores movieron)
-    if (currentRound.player1_move && currentRound.player2_move) {
-      // Solo el jugador 1 puede comenzar una nueva ronda
+    // Si la ronda actual está completa o tiene ganador, solo el jugador 1 puede comenzar la siguiente
+    if ((currentRound.player1_move && currentRound.player2_move) || currentRound.winner) {
       return this.isPlayer1Turn;
     }
 

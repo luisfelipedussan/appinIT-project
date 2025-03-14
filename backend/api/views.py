@@ -40,23 +40,34 @@ class GameViewSet(viewsets.ModelViewSet):
                     status=status.HTTP_400_BAD_REQUEST
                 )
             
-            # Validar que sea el turno del jugador
-            current_round = game.rounds.filter(winner=None).first()
-            if not current_round:
-                current_round = Round.objects.create(game=game)
-                
-            if current_round.player1_move and player_id == game.player1.id:
-                return Response(
-                    {"error": "No es tu turno"},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
+            # Obtener la última ronda del juego
+            current_round = game.rounds.order_by('-created_at').first()
             
-            if current_round.player2_move and player_id == game.player2.id:
-                return Response(
-                    {"error": "No es tu turno"},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-                
+            # Crear una nueva ronda si:
+            # - No hay rondas
+            # - La última ronda está completa (tiene ambos movimientos)
+            # - La última ronda tiene un ganador
+            if not current_round or \
+               (current_round.player1_move and current_round.player2_move) or \
+               current_round.winner:
+                current_round = Round.objects.create(game=game)
+            
+            # Validar el orden de los turnos
+            if current_round.player1_move is None:
+                # Si es el primer movimiento de la ronda, debe ser el jugador 1
+                if player_id != game.player1.id:
+                    return Response(
+                        {"error": "Es el turno del Jugador 1"},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+            elif current_round.player2_move is None:
+                # Si ya hay un movimiento del jugador 1, debe ser el jugador 2
+                if player_id != game.player2.id:
+                    return Response(
+                        {"error": "Es el turno del Jugador 2"},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+            
             # Registrar movimiento
             if player_id == game.player1.id:
                 current_round.player1_move = movement
@@ -79,7 +90,7 @@ class GameViewSet(viewsets.ModelViewSet):
                         game.winner = game.player2
                         game.is_active = False
                     game.save()
-            
+
             return Response(GameSerializer(game).data)
             
         except Game.DoesNotExist:
