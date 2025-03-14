@@ -1,0 +1,27 @@
+services:
+  backend:
+    build: ./backend
+    container_name: rps-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=1
+      - DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
+    volumes:
+      - ./backend:/app
+    networks:
+      - rps-network
+
+  frontend:
+    build: ./frontend
+    container_name: rps-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - rps-network
+
+networks:
+  rps-network:
+    driver: bridge 
