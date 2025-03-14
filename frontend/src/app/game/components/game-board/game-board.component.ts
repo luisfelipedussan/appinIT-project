@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, PLATFORM_ID, Inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { GameService } from '../../services/game.service';
 import { Game } from '../../interfaces/game.interface';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
@@ -249,6 +249,7 @@ export class GameBoardComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private gameService: GameService,
     @Inject(PLATFORM_ID) platformId: Object
   ) {
@@ -430,8 +431,8 @@ export class GameBoardComponent implements OnInit, OnDestroy {
     
     this.gameService.restartGame(this.gameId).subscribe({
       next: (newGame: Game) => {
-        this.game = newGame;
-        this.isPlayer1Turn = true;
+        // Navegar al nuevo juego
+        this.router.navigate(['/game', newGame.id]);
       },
       error: (error: any) => {
         console.error('Error al reiniciar el juego:', error);
