@@ -223,25 +223,30 @@ export class GameBoardComponent implements OnInit, OnDestroy {
     console.log('Estado actual:', {
       currentRound,
       rounds: this.game.rounds,
-      isPlayer1Turn: this.isPlayer1Turn
+      isPlayer1Turn: this.isPlayer1Turn,
+      roundsLength: this.game.rounds.length,
+      scores: {
+        player1: this.game.player1_score,
+        player2: this.game.player2_score
+      }
     });
 
+    // Si no hay ronda actual, comienza el jugador 1
     if (!currentRound) {
       this.isPlayer1Turn = true;
       return;
     }
 
-    // Si ambos jugadores han movido en la ronda actual
+    // Si la ronda está completa (ambos jugadores movieron)
     if (currentRound.player1_move && currentRound.player2_move) {
-      // La siguiente ronda siempre comienza con el jugador 1
       this.isPlayer1Turn = true;
       return;
     }
 
     // Durante una ronda en progreso
-    if (!currentRound.player1_move) {
+    if (currentRound.player1_move === null) {
       this.isPlayer1Turn = true;
-    } else if (!currentRound.player2_move) {
+    } else if (currentRound.player2_move === null) {
       this.isPlayer1Turn = false;
     }
   }
@@ -254,23 +259,27 @@ export class GameBoardComponent implements OnInit, OnDestroy {
     console.log('Verificando si puede mover:', {
       currentRound,
       isPlayer1Turn: this.isPlayer1Turn,
-      roundsLength: this.game.rounds.length
+      roundsLength: this.game.rounds.length,
+      scores: {
+        player1: this.game.player1_score,
+        player2: this.game.player2_score
+      }
     });
 
-    // Si no hay rondas, el jugador 1 comienza
+    // Si no hay ronda actual, solo el jugador 1 puede comenzar
     if (!currentRound) {
       return this.isPlayer1Turn;
     }
-    
-    // Si la ronda actual está completa
+
+    // Si la ronda está completa (ambos jugadores movieron)
     if (currentRound.player1_move && currentRound.player2_move) {
-      // Siempre permitir que el jugador 1 comience una nueva ronda
+      // Solo el jugador 1 puede comenzar una nueva ronda
       return this.isPlayer1Turn;
     }
-    
+
     // Durante una ronda en progreso
     if (this.isPlayer1Turn) {
-      return !currentRound.player1_move;
+      return currentRound.player1_move === null;
     } else {
       return currentRound.player1_move !== null && currentRound.player2_move === null;
     }
@@ -296,14 +305,28 @@ export class GameBoardComponent implements OnInit, OnDestroy {
       playerId,
       move,
       isPlayer1Turn: this.isPlayer1Turn,
-      currentRound: this.game.rounds[this.game.rounds.length - 1]
+      currentRound: this.game.rounds[this.game.rounds.length - 1],
+      scores: {
+        player1: this.game.player1_score,
+        player2: this.game.player2_score
+      }
     });
 
     this.gameService.makeMove(this.gameId, playerId, move).subscribe({
       next: (updatedGame) => {
-        console.log('Juego actualizado:', updatedGame);
+        console.log('Juego actualizado después del movimiento:', updatedGame);
         this.game = updatedGame;
-        this.updateGameStatus();
+        
+        const currentRound = updatedGame.rounds[updatedGame.rounds.length - 1];
+        
+        // Si la ronda está completa
+        if (currentRound.player1_move && currentRound.player2_move) {
+          this.isPlayer1Turn = true;  // El siguiente turno es para el jugador 1
+        } else if (currentRound.player1_move === null) {
+          this.isPlayer1Turn = true;  // Es turno del jugador 1
+        } else {
+          this.isPlayer1Turn = false; // Es turno del jugador 2
+        }
       },
       error: (error) => {
         console.error('Error al realizar movimiento:', error);
