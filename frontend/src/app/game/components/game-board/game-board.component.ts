@@ -58,7 +58,10 @@ import { switchMap } from 'rxjs/operators';
       <div class="game-over" *ngIf="!game.is_active">
         <h2>¡Juego Terminado!</h2>
         <p>Ganador: {{ game.winner?.name }}</p>
-        <button class="vintage-button" (click)="restartGame()">Jugar de Nuevo</button>
+        <div class="game-over-buttons">
+          <button class="vintage-button" (click)="restartGame()">Revancha</button>
+          <button class="vintage-button new-game" (click)="newGame()">Nuevo Juego</button>
+        </div>
       </div>
     </div>
   `,
@@ -237,6 +240,21 @@ import { switchMap } from 'rxjs/operators';
       color: #4a6741;
       font-weight: bold;
       font-size: 18px;
+    }
+
+    .game-over-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .vintage-button.new-game {
+      background: #6b4e71;
+    }
+
+    .vintage-button.new-game:hover {
+      background: #4a6741;
     }
   `]
 })
@@ -439,5 +457,9 @@ export class GameBoardComponent implements OnInit, OnDestroy {
         alert('Error al reiniciar el juego. Intenta de nuevo.');
       }
     });
+  }
+
+  newGame(): void {
+    this.router.navigate(['/']);
   }
 }
